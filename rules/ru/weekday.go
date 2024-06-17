@@ -26,7 +26,9 @@ func Weekday(s rules.Strategy) rules.Rule {
 				norm = m.Captures[0]
 			}
 			if norm == "" {
-				norm = "следующ"
+				// если нет нормализации, то по умолчанию "этот", а не "следующий"
+				// когда говорят без указания периода недели, то обычно считается ближайший день
+				norm = "эт"
 			}
 			norm = strings.ToLower(strings.TrimSpace(norm))
 
@@ -50,8 +52,19 @@ func Weekday(s rules.Strategy) rules.Rule {
 				} else {
 					c.Duration = -(7 * 24 * time.Hour)
 				}
-			case strings.Contains(norm, "следующ"),
-				norm == "в",
+			case strings.Contains(norm, "следующ"):
+				diff := dayInt - int(ref.Weekday())
+				if diff == 0 {
+					// тот же день недели, добавляем неделю
+					c.Duration = 7 * 24 * time.Hour
+				} else {
+					// день недели еще не наступил или уже прошел
+					// вне зависимости от этого, следующий (что-то) обычно говорят про день на следующей неделе
+					// по этому и добивать мы должны не до текущей недели, а до следующей
+					// значение "следующий" тут идет не по порядку, а отсылаясь к неделе
+					c.Duration = time.Duration(7+diff) * 24 * time.Hour
+				}
+			case norm == "в",
 				norm == "к",
 				strings.Contains(norm, "во"),
 				strings.Contains(norm, "ко"),
