@@ -1,6 +1,7 @@
 package ru_test
 
 import (
+	"github.com/stretchr/testify/require"
 	"testing"
 	"time"
 
@@ -10,7 +11,7 @@ import (
 )
 
 func TestWeekday(t *testing.T) {
-	// current is Friday
+	// current is Wednesday (based on null time in ru_test.go: 2016-01-06 Wednesday)
 	fixt := []Fixture{
 		// past/last
 		{"это нужно было сделать в прошлый Понедельник", 45, "прошлый Понедельник", -(2 * 24 * time.Hour)},
@@ -22,8 +23,8 @@ func TestWeekday(t *testing.T) {
 		// next
 		{"в следующий вторник", 3, "следующий вторник", 6 * 24 * time.Hour},
 		{"напиши мне в следующую среду, договоримся", 23, "следующую среду", 7 * 24 * time.Hour},
-		{"следующая суббота", 0, "следующая суббота", 3 * 24 * time.Hour},
-		{"в следующую суббота", 3, "следующую суббота", 3 * 24 * time.Hour},
+		{"следующая суббота", 0, "следующая суббота", 10 * 24 * time.Hour},
+		{"в следующую субботу", 3, "следующую субботу", 10 * 24 * time.Hour},
 
 		// this
 		{"в этот вторник", 3, "этот вторник", -(24 * time.Hour)},
@@ -31,6 +32,7 @@ func TestWeekday(t *testing.T) {
 		{"эта суббота", 0, "эта суббота", 3 * 24 * time.Hour},
 		{"во вторник", 0, "во вторник", 6 * 24 * time.Hour},
 		{"в субботу", 0, "в субботу", 3 * 24 * time.Hour},
+		{"в эту субботу", 3, "эту субботу", 3 * 24 * time.Hour},
 	}
 
 	w := when.New(nil)
