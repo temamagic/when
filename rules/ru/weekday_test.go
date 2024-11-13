@@ -1,7 +1,6 @@
 package ru_test
 
 import (
-	"github.com/stretchr/testify/require"
 	"testing"
 	"time"
 
